@@ -1,9 +1,5 @@
-import numpy
-
 from ActivationFunctions import *
 import numpy as np
-import multiprocessing
-import time
 rng = np.random.default_rng()
 
 
@@ -63,7 +59,7 @@ class ComputeLayer(Layer):
         self.activation_derivatives = np.zeros(self.size)
         self.forward_costs = np.zeros(self.prev_size)
         self.batch_error_size = (1, self.weights.shape[0], self.weights.shape[1])
-        self.batch_errors = numpy.zeros(self.batch_error_size)
+        self.batch_errors = np.zeros(self.batch_error_size)
         self.batch_index = 0
 
     def gen_batch_errors(self, batch_size):
@@ -158,7 +154,6 @@ class NeuralNetwork:
         training_error = np.zeros(epoch_size)
         test_error = np.zeros(epoch_size)
         self.learning_rate = learning_rate
-        train_pool = multiprocessing.Pool(16)
 
         for layer in self.layers[1:len(self.layers)-1]:
             layer.gen_batch_errors(batch_size)
@@ -166,10 +161,10 @@ class NeuralNetwork:
         for epoch in range(epoch_size):
             batches = self.batch_data(train_data, batch_size)
             for batch in batches:
-                self.run_batch(batch, train_pool)
+                self.run_batch(batch)
                 self.update_network()
-            training_error[epoch] = self.test_nn(train_data, train_pool)
-            test_error[epoch] = self.test_nn(test_data, train_pool)
+            training_error[epoch] = self.test_nn(train_data)
+            test_error[epoch] = self.test_nn(test_data)
             print("Epoch {0} complete".format(epoch + 1))
         return training_error, test_error
 
@@ -184,7 +179,7 @@ class NeuralNetwork:
                 batches.append(labelled_data[x:])
         return batches
 
-    def run_batch(self, batch, process_pool):
+    def run_batch(self, batch):
         batch_run = np.fromiter(map(self.run_calc, batch), dtype=object)
 
     def run_calc(self, data):
@@ -213,7 +208,7 @@ class NeuralNetwork:
         cost = np.sum(np.power(result - correct_output, 2))
         return cost
 
-    def test_nn(self, labelled_data, process_pool):
+    def test_nn(self, labelled_data):
         results = []
         costs = np.zeros(len(labelled_data))
         costs = np.fromiter(map(self.test_run, labelled_data), dtype=np.float64)
