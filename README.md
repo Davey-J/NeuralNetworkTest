@@ -53,7 +53,8 @@ After 400 Epochs however, the error of the Big MLP network was 0.00633, a number
 whereas the Augmented MLP had an error of 0.00565, showing improvement as time goes one, with an error of 0.00525 after
 450 Epochs
 
-
-
+CNN 0.00532 after 50 Epochs 0.00350 after 100 Epochs 0.00302 after 150 Epochs 0.00292 after 200 Epochs 0.00272
+New CNN 0.00514 after 50 Epochs New CNN 0.00327 after 200 Epochs
+Newer CNN 0.00258 after 200 Epochs 0.00237 after 1000 Epochs
 
 
